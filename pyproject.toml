@@ -28,6 +28,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+run = ["pandas", "pywr"]
 dev = ["pytest>=8.0", "pytest-cov>=5.0", "mypy>=1.10", "pandas-stubs"]
 
 [project.scripts]
