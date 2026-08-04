@@ -10,6 +10,9 @@ setup(
     install_requires=[
         "click>=8.0.0",
     ],
+    extras_require={
+        "dev": ["pytest>=8.0", "pytest-cov>=5.0"],
+    },
     entry_points={
         "console_scripts": [
             "pywr-utils=pywr_utils.cli:main",
