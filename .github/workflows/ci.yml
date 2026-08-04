@@ -1,0 +1,34 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[run]" pytest
+      - run: pytest tests/ -v
+
+  test-minimal-install:
+    # Regression guard for the model_runner lazy-import bug: a plain `pip install .`, with neither pandas nor pywr present, must still let create-synthetic-model run — only the `run` extra needs either.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install .
+      - run: |
+          pywr-utils create-synthetic-model --zones 2 --transfers 1 --output /tmp/synthetic.json --show-summary
+          test -f /tmp/synthetic.json
+      - name: confirm pandas and pywr are genuinely absent
+        run: |
+          ! python -c "import pandas" 2>/dev/null
+          ! python -c "import pywr" 2>/dev/null
