@@ -22,6 +22,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      # pywr's lpsolve extension needs headers this runner doesn't have; glpk (also needed) is installed below via apt.
+      PYWR_BUILD_LPSOLVE: "false"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,7 +32,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -e ".[dev]"
+      - run: sudo apt-get update && sudo apt-get install -y libglpk-dev
+      - run: pip install -e ".[run,dev]"
       - run: pytest -v
       - name: write coverage summary
         # Fully native, no admin-gated feature or third-party action needed: coverage.py's own markdown formatter piped into GitHub Actions' own step-summary mechanism. Shows up on every run's summary page (and one click away from the PR checks list) regardless of whether Code Quality is ever enabled.
