@@ -22,6 +22,12 @@ jobs:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
       - run: pytest -v
+      - name: write coverage summary
+        # Fully native, no admin-gated feature or third-party action needed: coverage.py's own markdown formatter piped into GitHub Actions' own step-summary mechanism. Shows up on every run's summary page (and one click away from the PR checks list) regardless of whether Code Quality is ever enabled.
+        if: always()
+        run: |
+          echo '## Coverage' >> "$GITHUB_STEP_SUMMARY"
+          python -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
       - name: upload coverage report
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         uses: actions/upload-code-coverage@v1
