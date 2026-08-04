@@ -39,4 +39,4 @@ include = ["pywr_utils*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=pywr_utils --cov-report=term-missing"
+addopts = "--cov=pywr_utils --cov-report=term-missing --cov-report=xml"
