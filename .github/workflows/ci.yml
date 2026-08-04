@@ -4,17 +4,32 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  code-quality: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
       - run: pytest -v
+      - name: upload coverage report
+        # requires Code Quality to be enabled for this repo (Settings > Security > Code quality) — an org/repo admin action, not something CI can do on its own.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/upload-code-coverage@v1
+        with:
+          file: coverage.xml
+          language: Python
+          label: code-coverage/pytest
 
   test-minimal-install:
     # Regression guard for the model_runner lazy-import bug: a plain `pip install .`, with neither pandas nor pywr present, must still let create-synthetic-model run — only the `run` extra needs either.
