@@ -9,7 +9,7 @@ class SyntheticModelCreator:
     
     def __init__(self, inputs: int, transfers: int):
         """Initialize the model creator.
-        
+
         Args:
             inputs: Number of inputs to create
             transfers: Number of transfers to create
@@ -34,7 +34,7 @@ class SyntheticModelCreator:
     
     def create_inputs(self) -> List[Dict[str, Any]]:
         """Create input nodes for the model.
-        
+
         Returns:
             List of input node definitions
         """
@@ -74,7 +74,7 @@ class SyntheticModelCreator:
 
     def create_demand_nodes(self) -> List[Dict[str, Any]]:
         """Create demand nodes for the model.
-        
+
         Returns:
             List of demand node definitions
         """
@@ -94,7 +94,7 @@ class SyntheticModelCreator:
     
     def create_transfer_nodes(self) -> List[Dict[str, Any]]:
         """Create transfer link nodes.
-        
+
         Returns:
             List of transfer node definitions
         """
@@ -118,7 +118,7 @@ class SyntheticModelCreator:
     
     def create_edges(self) -> List[List[str]]:
         """Create edges connecting the nodes.
-        
+
         Returns:
             List of edge definitions [from_node, to_node]
         """
@@ -145,17 +145,17 @@ class SyntheticModelCreator:
 
     def create_parameters(self) -> Dict[str, Any]:
         """Create model parameters.
-        
+
         Returns:
             List of parameter definitions
         """
-        parameters = {}
-        
+        parameters: Dict[str, Any] = {}
+
         return parameters
     
     def build_model(self) -> Dict[str, Any]:
         """Build the complete model structure.
-        
+
         Returns:
             Complete PYWR model dictionary
         """
@@ -179,10 +179,10 @@ class SyntheticModelCreator:
     
     def save_model(self, filename: str) -> str:
         """Save the model to a JSON file.
-        
+
         Args:
             filename: Output filename
-            
+
         Returns:
             Path to the saved file
         """
@@ -195,7 +195,7 @@ class SyntheticModelCreator:
     
     def get_model_summary(self) -> str:
         """Get a summary of the created model.
-        
+
         Returns:
             String summary of the model
         """
@@ -220,12 +220,10 @@ class SyntheticModelCreator:
 
 def create_synthetic_model(inputs: int, transfers: int, output_file: Optional[str] = None) -> Dict[str, Any]:
     """Create a synthetic PYWR model.
-    
+
     Args:
-        inputs: Number of inputs to create
-        transfers: Number of transfers to create
-        output_file: Optional output filename
-        
+        inputs: Number of inputs to create transfers: Number of transfers to create output_file: Optional output filename
+
     Returns:
         Model dictionary
     """
