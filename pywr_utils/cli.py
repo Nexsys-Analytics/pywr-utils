@@ -3,7 +3,6 @@
 import click
 import os
 from .model_creation import SyntheticModelCreator
-from .model_runner import run_file, run_incremental_sizes
 
 
 @click.group()
@@ -83,6 +82,7 @@ def create_synthetic_model(zones, transfers, output, show_summary, run):
         # Run the model if requested
         if run:
             click.echo(f"\nRunning model...")
+            from .model_runner import run_file
             run_file(saved_file)
         
     except Exception as e:
@@ -138,6 +138,7 @@ def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer
     click.echo(f"  Output file: {output}")
     
     try:
+        from .model_runner import run_incremental_sizes
         results_df = run_incremental_sizes(
             max_zones=max_zones,
             zone_increment=zone_increment,
