@@ -11,6 +11,7 @@ setup(
         "click>=8.0.0",
     ],
     extras_require={
+        "run": ["pandas", "pywr"],
         "dev": ["pytest>=8.0", "pytest-cov>=5.0"],
     },
     entry_points={
