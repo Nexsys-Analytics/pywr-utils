@@ -28,6 +28,7 @@ pywr-utils create-synthetic-model --zones 5 --transfers 10
 1. Clone the repository
 2. Install in development mode: `pip install -e .`
 3. Run the CLI: `pywr-utils --help`
+4. One-time, so the pre-push gitleaks hook actually runs: `pip install pre-commit && pre-commit install` (needs the `gitleaks` binary on PATH — `brew install gitleaks` or see the install step in `.github/workflows/gitleaks.yml`). CI runs the same scan on every push/PR regardless, this just catches a leak before it leaves your machine.
 
 ## License
 
