@@ -50,6 +50,24 @@ def test_a_model_that_fails_after_being_written_is_still_cleaned_up(workdir, cap
     assert list((workdir / "models").iterdir()) == [], "the half-finished model file must not be left behind"
 
 
+def test_a_failed_model_whose_file_also_resists_deletion_still_returns_results(workdir, monkeypatch):
+    """Both the run and the cleanup fail. The sweep must still hand back the error row rather than letting the cleanup's own exception escape and destroy the results of every model before it."""
+
+    def explode(self, filename, solver=None):
+        raise RuntimeError("load exploded")
+
+    def refuse_to_delete(path):
+        raise OSError("permission denied")
+
+    monkeypatch.setattr(PywrFileRunner, "load_pywr_model_from_file", explode)
+    monkeypatch.setattr(os, "unlink", refuse_to_delete)
+
+    results = run_incremental_sizes(**SWEEP_ARGS)
+
+    assert (results["error"] == "load exploded").all()
+    assert (workdir / "timings.csv").exists()
+
+
 def test_the_chart_is_still_drawn_for_a_failed_model(workdir, monkeypatch):
     rendered = []
     monkeypatch.setattr(model_runner, "_display_terminal_graph", lambda df: rendered.append(len(df)))
