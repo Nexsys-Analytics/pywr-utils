@@ -19,6 +19,8 @@ jobs:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
       - run: mypy pywr_utils/
+      - name: dead-code scan (vulture)
+        run: vulture pywr_utils vulture_whitelist.py --min-confidence 80
 
   test:
     runs-on: ubuntu-latest
