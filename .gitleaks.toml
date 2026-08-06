@@ -1,0 +1,3 @@
+# gitleaks config — extends the built-in rules. No repo-specific rules needed here (unlike cluster-api-v2's own .gitleaks.toml, which hardcodes patterns for its own known-leaked literal secrets).
+[extend]
+useDefault = true
