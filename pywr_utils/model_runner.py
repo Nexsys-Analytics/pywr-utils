@@ -32,15 +32,13 @@ class PywrFileRunner():
         with open(modelpath, 'r') as f:
             pywr_data = json.load(f)
 
-        #self.model = Model.load(pywr_data, solver='lpsolve')
-        self.model = Model.load(pywr_data, solver='glpk')
+        self.model = Model.load(pywr_data, solver=solver or 'glpk')
 
     def run_pywr_model(self, outfile="output_1.csv", create_csv=True):
         """Run the PYWR model and return timing information.
-        
+
         Args:
-            outfile: Output CSV filename (ignored if create_csv=False)
-            create_csv: Whether to create CSV output file (default: True)
+            outfile: Output CSV filename (ignored if create_csv=False) create_csv: Whether to create CSV output file (default: True)
         """
         setup_time = 0
         run_time = 0
@@ -63,8 +61,7 @@ class PywrFileRunner():
             run_time = time.time() - run_start
             self.log.info(run_stats)
 
-            # dataframes_to_output = []
-            # columns = []
+            # dataframes_to_output = [] columns = []
             columns = []
             data = []
             print("Model run complete. Processing results...")
@@ -104,14 +101,9 @@ class PywrFileRunner():
 def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, transfer_increment=10, output_csv="incremental_timing_results.csv", show_graph=False):
     """
     Run incremental model sizes and measure setup times.
-    
+
     Args:
-        max_zones: Maximum number of zones to test (default: 100)
-        zone_increment: Increment for zones (default: 10)
-        max_transfers: Maximum number of transfers per zone size (defaults to max_zones, but overrides zone limitation if specified)
-        transfer_increment: Increment for transfers (default: 10)
-        output_csv: Output CSV filename for results
-        show_graph: Show a terminal graph of time vs transfers (default: False)
+        max_zones: Maximum number of zones to test (default: 100) zone_increment: Increment for zones (default: 10) max_transfers: Maximum number of transfers per zone size (defaults to max_zones, but overrides zone limitation if specified) transfer_increment: Increment for transfers (default: 10) output_csv: Output CSV filename for results show_graph: Show a terminal graph of time vs transfers (default: False)
     """
     from .model_creation import SyntheticModelCreator
     import tempfile
