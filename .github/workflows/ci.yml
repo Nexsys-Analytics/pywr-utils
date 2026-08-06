@@ -21,6 +21,13 @@ jobs:
       - run: mypy pywr_utils/
       - name: dead-code scan (vulture)
         run: vulture pywr_utils vulture_whitelist.py --min-confidence 80
+      - name: security scan (bandit)
+        run: bandit -r pywr_utils
+      - name: dependency vulnerability scan (pip-audit)
+        # pip itself is not a declared dependency, just whatever setup-python provisions; keep it current so a stale bundled pip doesn't produce a false CVE finding here.
+        run: |
+          pip install -U pip
+          pip-audit --skip-editable
 
   test:
     runs-on: ubuntu-latest
