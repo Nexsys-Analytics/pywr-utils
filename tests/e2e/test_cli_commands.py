@@ -3,6 +3,7 @@
 These drive the CLI the way a user does — through the Click entrypoint with argv-style arguments — rather than calling the underlying functions. The final test in this file goes one step further and shells out to the installed `pywr-utils` console script, which is the only way to prove the packaging metadata in pyproject.toml actually produces a working command.
 """
 import json
+import runpy
 import shutil
 import subprocess
 import sys
@@ -174,6 +175,16 @@ def test_a_failing_sweep_aborts_with_an_error(runner, workdir, monkeypatch):
 
     assert result.exit_code != 0
     assert failure in result.output
+
+
+def test_the_module_is_runnable_with_python_dash_m(monkeypatch):
+    """`python -m pywr_utils.cli` is a supported way in, so the __main__ guard has to actually dispatch to the Click group."""
+    monkeypatch.setattr(sys, "argv", ["pywr-utils", "--help"])
+
+    with pytest.raises(SystemExit) as exit_info:
+        runpy.run_module("pywr_utils.cli", run_name="__main__")
+
+    assert exit_info.value.code == 0
 
 
 def test_the_installed_console_script_creates_a_model(tmp_path):
