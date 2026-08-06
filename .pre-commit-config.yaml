@@ -1,0 +1,17 @@
+default_install_hook_types: [pre-push]
+
+repos:
+  - repo: local
+    hooks:
+      - id: gitleaks-pre-push
+        name: gitleaks (scan commits about to be pushed)
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        entry: >-
+          bash -c '
+            UPSTREAM=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/dev/null || echo "");
+            if [ -n "$UPSTREAM" ]; then RANGE="${UPSTREAM}..HEAD"; else RANGE="-1 HEAD"; fi;
+            echo "Scanning commit range: $RANGE";
+            gitleaks detect --source . --log-opts="$RANGE" --config .gitleaks.toml --redact --verbose
+          '
