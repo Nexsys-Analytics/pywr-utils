@@ -7,6 +7,8 @@ import pytest
 
 from pywr_utils.model_runner import _display_terminal_graph, _draw_line
 
+pytestmark = pytest.mark.unit
+
 
 def timing_frame(zones, transfers, setup_times):
     return pd.DataFrame({"zones": zones, "transfers": transfers, "setup_time": setup_times})
