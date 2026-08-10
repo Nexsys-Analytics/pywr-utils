@@ -121,7 +121,7 @@ def test_recorders_named_total_are_echoed_to_stdout(model_file_with_recorders, t
     output = capsys.readouterr().out
 
     total_recorder = next(r for r in runner.model.recorders if "total" in r.name)
-    assert f"{total_recorder.name}: {list(total_recorder.values())[0]}" in output
+    assert f"{total_recorder.name}: {next(iter(total_recorder.values()))}" in output
 
 
 def test_a_recorder_that_cannot_report_values_is_logged_and_skipped(model_file, tmp_path, caplog):
