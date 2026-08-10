@@ -50,3 +50,7 @@ fail_under = 97
 # pywr ships no type stubs and no py.typed marker (not a types-pywr package situation — it's a niche scientific library that's simply untyped).
 module = "pywr.*"
 ignore_missing_imports = true
+
+[tool.ruff.lint]
+# Pinned explicitly rather than relying on the implicit default: a plain `pip install ruff` (what CI and pre-commit both use) resolves a much broader default rule set than the documented quickstart default (E4/E7/E9/F) that a locally-installed Homebrew ruff binary resolves to, despite both self-reporting the same version -- confirmed by hashing the two binaries, they are genuinely different builds. Pinning here makes the enforced ruleset deterministic regardless of how ruff was installed.
+select = ["E4", "E7", "E9", "F"]
