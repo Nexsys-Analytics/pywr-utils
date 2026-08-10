@@ -8,6 +8,7 @@ from pywr.model import Model
 from pywr.recorders.progress import ProgressRecorder
 
 logging.basicConfig(level='INFO')
+logger = logging.getLogger(__name__)
 
 def run_file(filepath, output_file=None):
     """Run a PYWR model from file and return timing information."""
@@ -188,8 +189,8 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
                     print(f"    Warning: Could not delete {model_filename}: {e}")
                 
             except Exception as e:
-                print(f"    Error: {e!s}")
-                
+                logger.exception("Error running model with %s zones and %s transfers", zones, transfers)
+
                 # Clean up model file if it exists, even on error
                 models_dir = "models"
                 model_filename = os.path.join(models_dir, f"current_model_{zones}z_{transfers}t.json")
