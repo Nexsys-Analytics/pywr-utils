@@ -29,7 +29,7 @@ dependencies = [
 
 [project.optional-dependencies]
 run = ["pandas", "pywr"]
-dev = ["pytest>=8.0", "pytest-cov>=5.0", "mypy>=1.10", "pandas-stubs", "vulture>=2.11", "bandit>=1.7", "pip-audit>=2.7", "ruff>=0.16"]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "mypy>=1.10", "pandas-stubs", "vulture>=2.11", "bandit>=1.7", "pip-audit>=2.7", "ruff==0.16.2"]
 
 [project.scripts]
 pywr-utils = "pywr_utils.cli:main"
@@ -52,5 +52,4 @@ module = "pywr.*"
 ignore_missing_imports = true
 
 [tool.ruff.lint]
-# Pinned explicitly rather than relying on the implicit default: a plain `pip install ruff` (what CI and pre-commit both use) resolves a much broader default rule set than the documented quickstart default (E4/E7/E9/F) that a locally-installed Homebrew ruff binary resolves to, despite both self-reporting the same version -- confirmed by hashing the two binaries, they are genuinely different builds. Pinning here makes the enforced ruleset deterministic regardless of how ruff was installed.
-select = ["E4", "E7", "E9", "F"]
+# No select override here deliberately: ruff's own real default ruleset applies. This stays deterministic not by pinning the rule list but by pinning the ruff *version* itself exactly everywhere it runs (see the ruff dev dependency and .pre-commit-config.yaml), so "the default" always means the same concrete rule list until someone deliberately bumps the version pin.
