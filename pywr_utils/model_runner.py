@@ -1,12 +1,12 @@
 import json
+import logging
 import os
-import pandas as pd
 import time
 
+import pandas as pd
 from pywr.model import Model
 from pywr.recorders.progress import ProgressRecorder
 
-import logging
 logging.basicConfig(level='INFO')
 
 def run_file(filepath, output_file=None):
@@ -20,7 +20,7 @@ def run_file(filepath, output_file=None):
     timing_info = pfr.run_pywr_model(output_file)
     return timing_info
 
-class PywrFileRunner():
+class PywrFileRunner:
     def __init__(self):
         self.model = None
         self.log = logging.getLogger(__name__)
@@ -188,7 +188,7 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
                     print(f"    Warning: Could not delete {model_filename}: {e}")
                 
             except Exception as e:
-                print(f"    Error: {str(e)}")
+                print(f"    Error: {e!s}")
                 
                 # Clean up model file if it exists, even on error
                 models_dir = "models"
@@ -232,7 +232,7 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
                 print(f"✗ Warning: Output file was not created at {output_path}")
 
         except Exception as e:
-            print(f"✗ Error saving CSV: {str(e)}")
+            print(f"✗ Error saving CSV: {e!s}")
             raise
         
         # Print summary statistics
