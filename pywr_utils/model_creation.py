@@ -202,7 +202,7 @@ class SyntheticModelCreator:
         model = self.build_model()
         
         summary_lines = [
-            f"Synthetic PYWR Model Summary:",
+            "Synthetic PYWR Model Summary:",
             f"  inputs: {self.inputs}",
             f"  Transfers: {self.transfers}",
             f"  Total Nodes: {len(model['nodes'])}",

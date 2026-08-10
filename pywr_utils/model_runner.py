@@ -2,7 +2,6 @@ import json
 import os
 import pandas as pd
 import time
-from typing import Dict, Any
 
 from pywr.model import Model
 from pywr.recorders.progress import ProgressRecorder
@@ -106,7 +105,6 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
         max_zones: Maximum number of zones to test (default: 100) zone_increment: Increment for zones (default: 10) max_transfers: Maximum number of transfers per zone size (defaults to max_zones, but overrides zone limitation if specified) transfer_increment: Increment for transfers (default: 10) output_csv: Output CSV filename for results show_graph: Show a terminal graph of time vs transfers (default: False)
     """
     from .model_creation import SyntheticModelCreator
-    import tempfile
     
     # Track whether max_transfers was explicitly specified
     max_transfers_specified = max_transfers is not None
@@ -238,7 +236,7 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
             raise
         
         # Print summary statistics
-        print(f"\nSummary:")
+        print("\nSummary:")
         print(f"Total models tested: {len(results)}")
         if len(results) > 0:
             print(f"Average setup time: {df['setup_time'].mean():.3f}s")
@@ -330,8 +328,8 @@ def _display_terminal_graph(df):
             prev_x, prev_y = x, y
     
     # Print the chart
-    print(f"\nSetup Time (s)")
-    print(f"^")
+    print("\nSetup Time (s)")
+    print("^")
     
     # Y-axis labels and grid
     for y in range(chart_height):
@@ -342,14 +340,14 @@ def _display_terminal_graph(df):
         if y % 4 == 0:
             print(f"{time_val:6.3f} |", end="")
         else:
-            print(f"       |", end="")
+            print("       |", end="")
         
         # Print the row
         print(''.join(grid[y]))
     
     # X-axis
     print(f"       +{'-' * chart_width}")
-    print(f"       ", end="")
+    print("       ", end="")
     
     # X-axis labels
     for i in range(0, chart_width, 10):
@@ -362,18 +360,18 @@ def _display_terminal_graph(df):
     print(f"\n{' ' * 35}Transfers")
     
     # Legend
-    print(f"\nLegend:")
+    print("\nLegend:")
     for zones, char in legend_info:
         print(f"  {char} = {zones} zones")
     
     # Statistics
-    print(f"\nStatistics:")
+    print("\nStatistics:")
     print(f"Transfer range: {min_transfers} - {max_transfers}")
     print(f"Setup time range: {min_time:.3f}s - {max_time:.3f}s")
     
     # Show correlation for each zone count
     if len(zone_counts) > 1:
-        print(f"\nCorrelations by zone count:")
+        print("\nCorrelations by zone count:")
         for zones in zone_counts:
             zone_data = df[df['zones'] == zones]
             if len(zone_data) > 1:
