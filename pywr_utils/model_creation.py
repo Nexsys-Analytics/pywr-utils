@@ -1,7 +1,7 @@
 """Model creation utilities for PYWR synthetic models."""
 
 import json
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 class SyntheticModelCreator:
