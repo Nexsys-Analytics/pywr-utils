@@ -5,9 +5,9 @@ repos:
     # Ruff version.
     rev: v0.16.2
     hooks:
-      # Auto-fix lint issues on staged files; --exit-zero means this never blocks a commit on its own -- CI's ruff check . (no --fix, no --exit-zero) is what actually enforces the ruleset, this hook is fix-and-warn, a convenience, not a gate.
+      # Auto-fix lint issues on staged files and block the commit if any finding remains after the fix. The codebase reached zero findings under the real default ruleset (see the fix/remaining-ruff-findings PR chain), so this hook now enforces that state locally, matching CI's ruff check . rather than just warning about drift from it.
       - id: ruff-check
-        args: [--fix, --exit-zero]
+        args: [--fix]
 
   - repo: local
     hooks:
