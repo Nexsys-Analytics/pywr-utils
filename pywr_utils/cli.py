@@ -1,7 +1,9 @@
 """Command-line interface for pywr-utils."""
 
-import click
 import os
+
+import click
+
 from .model_creation import SyntheticModelCreator
 
 
@@ -9,7 +11,6 @@ from .model_creation import SyntheticModelCreator
 @click.version_option(version="0.1.0", prog_name="pywr-utils")
 def main():
     """PYWR utilities command-line interface."""
-    pass
 
 
 @main.command("create-synthetic-model")
@@ -86,7 +87,7 @@ def create_synthetic_model(zones, transfers, output, show_summary, run):
             run_file(saved_file)
         
     except Exception as e:
-        click.echo(f"✗ Error creating model: {str(e)}", err=True)
+        click.echo(f"✗ Error creating model: {e!s}", err=True)
         raise click.Abort()
 
 
@@ -152,7 +153,7 @@ def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer
         click.echo(f"Results saved to: {output}")
 
     except Exception as e:
-        click.echo(f"✗ Error running incremental sizes: {str(e)}", err=True)
+        click.echo(f"✗ Error running incremental sizes: {e!s}", err=True)
         raise click.Abort()
 
 
