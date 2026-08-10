@@ -140,7 +140,7 @@ def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer
     
     try:
         from .model_runner import run_incremental_sizes
-        results_df = run_incremental_sizes(
+        run_incremental_sizes(
             max_zones=max_zones,
             zone_increment=zone_increment,
             max_transfers=max_transfers,
