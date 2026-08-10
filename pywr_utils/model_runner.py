@@ -89,7 +89,7 @@ class PywrFileRunner:
                 'total_time': setup_time + run_time
             }
         except Exception as e:
-            logging.exception(e)
+            self.log.exception("Error running the PYWR model")
             return {
                 'setup_time': setup_time,
                 'run_time': run_time,
