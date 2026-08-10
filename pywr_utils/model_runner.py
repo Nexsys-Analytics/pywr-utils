@@ -74,7 +74,7 @@ class PywrFileRunner:
                     except NotImplementedError as e:
                         self.log.error(f"Error processing recorder {r.name}: {e}")
                     if 'total' in r.name:
-                        print(f"{r.name}: {list(r.values())[0]}")
+                        print(f"{r.name}: {next(iter(r.values()))}")
 
             # Only create CSV if requested
             if create_csv:
@@ -413,9 +413,8 @@ def _draw_line(grid, x1, y1, x2, y2, char, width, height):
     
     while True:
         # Ensure coordinates are within bounds
-        if 0 <= x < width and 0 <= y < height:
-            if grid[y][x] == ' ':  # Don't overwrite existing points
-                grid[y][x] = '·'  # Use a different character for line segments
+        if 0 <= x < width and 0 <= y < height and grid[y][x] == ' ':  # Don't overwrite existing points
+            grid[y][x] = '·'  # Use a different character for line segments
         
         if x == x2 and y == y2:
             break
