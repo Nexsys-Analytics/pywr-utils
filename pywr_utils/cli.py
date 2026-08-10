@@ -88,7 +88,7 @@ def create_synthetic_model(zones, transfers, output, show_summary, run):
         
     except Exception as e:
         click.echo(f"✗ Error creating model: {e!s}", err=True)
-        raise click.Abort()
+        raise click.Abort() from e
 
 
 @main.command("run-incremental-sizes")
@@ -154,7 +154,7 @@ def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer
 
     except Exception as e:
         click.echo(f"✗ Error running incremental sizes: {e!s}", err=True)
-        raise click.Abort()
+        raise click.Abort() from e
 
 
 if __name__ == "__main__":
