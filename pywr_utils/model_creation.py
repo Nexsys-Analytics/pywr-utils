@@ -1,7 +1,9 @@
 """Model creation utilities for PYWR synthetic models."""
 
+from __future__ import annotations
+
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class SyntheticModelCreator:
@@ -32,7 +34,7 @@ class SyntheticModelCreator:
             "parameters": []
         }
     
-    def create_inputs(self) -> List[Dict[str, Any]]:
+    def create_inputs(self) -> list[dict[str, Any]]:
         """Create input nodes for the model.
 
         Returns:
@@ -54,7 +56,7 @@ class SyntheticModelCreator:
             inputs.append(input)
         return inputs
     
-    def create_link_nodes(self) -> List[Dict[str, Any]]:
+    def create_link_nodes(self) -> list[dict[str, Any]]:
         """Create link nodes for each input.
 
         Returns:
@@ -72,7 +74,7 @@ class SyntheticModelCreator:
             link_nodes.append(link)
         return link_nodes
 
-    def create_demand_nodes(self) -> List[Dict[str, Any]]:
+    def create_demand_nodes(self) -> list[dict[str, Any]]:
         """Create demand nodes for the model.
 
         Returns:
@@ -92,7 +94,7 @@ class SyntheticModelCreator:
             demand_nodes.append(demand)
         return demand_nodes
     
-    def create_transfer_nodes(self) -> List[Dict[str, Any]]:
+    def create_transfer_nodes(self) -> list[dict[str, Any]]:
         """Create transfer link nodes.
 
         Returns:
@@ -116,7 +118,7 @@ class SyntheticModelCreator:
             transfer_nodes.append(transfer)
         return transfer_nodes
     
-    def create_edges(self) -> List[List[str]]:
+    def create_edges(self) -> list[list[str]]:
         """Create edges connecting the nodes.
 
         Returns:
@@ -143,17 +145,17 @@ class SyntheticModelCreator:
 
         return edges
 
-    def create_parameters(self) -> Dict[str, Any]:
+    def create_parameters(self) -> dict[str, Any]:
         """Create model parameters.
 
         Returns:
             List of parameter definitions
         """
-        parameters: Dict[str, Any] = {}
+        parameters: dict[str, Any] = {}
 
         return parameters
     
-    def build_model(self) -> Dict[str, Any]:
+    def build_model(self) -> dict[str, Any]:
         """Build the complete model structure.
 
         Returns:
@@ -218,7 +220,7 @@ class SyntheticModelCreator:
         return "\n".join(summary_lines)
 
 
-def create_synthetic_model(inputs: int, transfers: int, output_file: Optional[str] = None) -> Dict[str, Any]:
+def create_synthetic_model(inputs: int, transfers: int, output_file: str | None = None) -> dict[str, Any]:
     """Create a synthetic PYWR model.
 
     Args:
