@@ -15,6 +15,8 @@ from click.testing import CliRunner
 from pywr_utils import model_runner
 from pywr_utils.cli import main
 
+pytestmark = pytest.mark.e2e
+
 
 @pytest.fixture
 def runner():
