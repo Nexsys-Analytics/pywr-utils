@@ -1,7 +1,9 @@
 """Command-line interface for pywr-utils."""
 
-import click
 import os
+
+import click
+
 from .model_creation import SyntheticModelCreator
 
 
@@ -9,7 +11,6 @@ from .model_creation import SyntheticModelCreator
 @click.version_option(version="0.1.0", prog_name="pywr-utils")
 def main():
     """PYWR utilities command-line interface."""
-    pass
 
 
 @main.command("create-synthetic-model")
@@ -72,22 +73,22 @@ def create_synthetic_model(zones, transfers, output, show_summary, run):
         
         # Show basic statistics
         model = creator.build_model()
-        click.echo(f"\nModel Statistics:")
+        click.echo("\nModel Statistics:")
         click.echo(f"  • Total nodes: {len(model['nodes'])}")
         click.echo(f"  • Total edges: {len(model['edges'])}")
         click.echo(f"  • Parameters: {len(model['parameters'])}")
         
-        click.echo(f"\n✓ Synthetic model creation completed successfully!")
+        click.echo("\n✓ Synthetic model creation completed successfully!")
         
         # Run the model if requested
         if run:
-            click.echo(f"\nRunning model...")
+            click.echo("\nRunning model...")
             from .model_runner import run_file
             run_file(saved_file)
         
     except Exception as e:
-        click.echo(f"✗ Error creating model: {str(e)}", err=True)
-        raise click.Abort()
+        click.echo(f"✗ Error creating model: {e!s}", err=True)
+        raise click.Abort() from e
 
 
 @main.command("run-incremental-sizes")
@@ -130,7 +131,7 @@ def create_synthetic_model(zones, transfers, output, show_summary, run):
 )
 def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer_increment, output, show_graph):
     """Run incremental model sizes and measure setup times for performance analysis."""
-    click.echo(f"Running incremental size tests...")
+    click.echo("Running incremental size tests...")
     click.echo(f"  Max zones: {max_zones}")
     click.echo(f"  Zone increment: {zone_increment}")
     click.echo(f"  Max transfers: {max_transfers if max_transfers else max_zones}")
@@ -139,7 +140,7 @@ def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer
     
     try:
         from .model_runner import run_incremental_sizes
-        results_df = run_incremental_sizes(
+        run_incremental_sizes(
             max_zones=max_zones,
             zone_increment=zone_increment,
             max_transfers=max_transfers,
@@ -148,12 +149,12 @@ def run_incremental_sizes_cmd(max_zones, zone_increment, max_transfers, transfer
             show_graph=show_graph
         )
         
-        click.echo(f"\n✓ Incremental size testing completed successfully!")
+        click.echo("\n✓ Incremental size testing completed successfully!")
         click.echo(f"Results saved to: {output}")
 
     except Exception as e:
-        click.echo(f"✗ Error running incremental sizes: {str(e)}", err=True)
-        raise click.Abort()
+        click.echo(f"✗ Error running incremental sizes: {e!s}", err=True)
+        raise click.Abort() from e
 
 
 if __name__ == "__main__":

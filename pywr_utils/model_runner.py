@@ -1,14 +1,14 @@
 import json
+import logging
 import os
-import pandas as pd
 import time
-from typing import Dict, Any
 
+import pandas as pd
 from pywr.model import Model
 from pywr.recorders.progress import ProgressRecorder
 
-import logging
 logging.basicConfig(level='INFO')
+logger = logging.getLogger(__name__)
 
 def run_file(filepath, output_file=None):
     """Run a PYWR model from file and return timing information."""
@@ -21,7 +21,7 @@ def run_file(filepath, output_file=None):
     timing_info = pfr.run_pywr_model(output_file)
     return timing_info
 
-class PywrFileRunner():
+class PywrFileRunner:
     def __init__(self):
         self.model = None
         self.log = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ class PywrFileRunner():
                     except NotImplementedError as e:
                         self.log.error(f"Error processing recorder {r.name}: {e}")
                     if 'total' in r.name:
-                        print(f"{r.name}: {list(r.values())[0]}")
+                        print(f"{r.name}: {next(iter(r.values()))}")
 
             # Only create CSV if requested
             if create_csv:
@@ -89,7 +89,7 @@ class PywrFileRunner():
                 'total_time': setup_time + run_time
             }
         except Exception as e:
-            logging.exception(e)
+            self.log.exception("Error running the PYWR model")
             return {
                 'setup_time': setup_time,
                 'run_time': run_time,
@@ -106,7 +106,6 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
         max_zones: Maximum number of zones to test (default: 100) zone_increment: Increment for zones (default: 10) max_transfers: Maximum number of transfers per zone size (defaults to max_zones, but overrides zone limitation if specified) transfer_increment: Increment for transfers (default: 10) output_csv: Output CSV filename for results show_graph: Show a terminal graph of time vs transfers (default: False)
     """
     from .model_creation import SyntheticModelCreator
-    import tempfile
     
     # Track whether max_transfers was explicitly specified
     max_transfers_specified = max_transfers is not None
@@ -190,8 +189,8 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
                     print(f"    Warning: Could not delete {model_filename}: {e}")
                 
             except Exception as e:
-                print(f"    Error: {str(e)}")
-                
+                logger.exception("Error running model with %s zones and %s transfers", zones, transfers)
+
                 # Clean up model file if it exists, even on error
                 models_dir = "models"
                 model_filename = os.path.join(models_dir, f"current_model_{zones}z_{transfers}t.json")
@@ -234,11 +233,11 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
                 print(f"✗ Warning: Output file was not created at {output_path}")
 
         except Exception as e:
-            print(f"✗ Error saving CSV: {str(e)}")
+            print(f"✗ Error saving CSV: {e!s}")
             raise
         
         # Print summary statistics
-        print(f"\nSummary:")
+        print("\nSummary:")
         print(f"Total models tested: {len(results)}")
         if len(results) > 0:
             print(f"Average setup time: {df['setup_time'].mean():.3f}s")
@@ -330,8 +329,8 @@ def _display_terminal_graph(df):
             prev_x, prev_y = x, y
     
     # Print the chart
-    print(f"\nSetup Time (s)")
-    print(f"^")
+    print("\nSetup Time (s)")
+    print("^")
     
     # Y-axis labels and grid
     for y in range(chart_height):
@@ -342,14 +341,14 @@ def _display_terminal_graph(df):
         if y % 4 == 0:
             print(f"{time_val:6.3f} |", end="")
         else:
-            print(f"       |", end="")
+            print("       |", end="")
         
         # Print the row
         print(''.join(grid[y]))
     
     # X-axis
     print(f"       +{'-' * chart_width}")
-    print(f"       ", end="")
+    print("       ", end="")
     
     # X-axis labels
     for i in range(0, chart_width, 10):
@@ -362,18 +361,18 @@ def _display_terminal_graph(df):
     print(f"\n{' ' * 35}Transfers")
     
     # Legend
-    print(f"\nLegend:")
+    print("\nLegend:")
     for zones, char in legend_info:
         print(f"  {char} = {zones} zones")
     
     # Statistics
-    print(f"\nStatistics:")
+    print("\nStatistics:")
     print(f"Transfer range: {min_transfers} - {max_transfers}")
     print(f"Setup time range: {min_time:.3f}s - {max_time:.3f}s")
     
     # Show correlation for each zone count
     if len(zone_counts) > 1:
-        print(f"\nCorrelations by zone count:")
+        print("\nCorrelations by zone count:")
         for zones in zone_counts:
             zone_data = df[df['zones'] == zones]
             if len(zone_data) > 1:
@@ -414,9 +413,8 @@ def _draw_line(grid, x1, y1, x2, y2, char, width, height):
     
     while True:
         # Ensure coordinates are within bounds
-        if 0 <= x < width and 0 <= y < height:
-            if grid[y][x] == ' ':  # Don't overwrite existing points
-                grid[y][x] = '·'  # Use a different character for line segments
+        if 0 <= x < width and 0 <= y < height and grid[y][x] == ' ':  # Don't overwrite existing points
+            grid[y][x] = '·'  # Use a different character for line segments
         
         if x == x2 and y == y2:
             break

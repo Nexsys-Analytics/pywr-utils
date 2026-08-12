@@ -121,7 +121,7 @@ def test_recorders_named_total_are_echoed_to_stdout(model_file_with_recorders, t
     output = capsys.readouterr().out
 
     total_recorder = next(r for r in runner.model.recorders if "total" in r.name)
-    assert f"{total_recorder.name}: {list(total_recorder.values())[0]}" in output
+    assert f"{total_recorder.name}: {next(iter(total_recorder.values()))}" in output
 
 
 def test_a_recorder_that_cannot_report_values_is_logged_and_skipped(model_file, tmp_path, caplog):
@@ -149,13 +149,18 @@ def test_create_csv_false_skips_writing_the_output_file(model_file, tmp_path):
     assert not outfile.exists()
 
 
-def test_running_without_a_loaded_model_reports_the_error_instead_of_raising(tmp_path):
+def test_running_without_a_loaded_model_reports_the_error_instead_of_raising(tmp_path, caplog):
     runner = PywrFileRunner()
 
-    timings = runner.run_pywr_model(str(tmp_path / "out.csv"))
+    with caplog.at_level(logging.ERROR, logger="pywr_utils.model_runner"):
+        timings = runner.run_pywr_model(str(tmp_path / "out.csv"))
 
     assert timings["error"]
     assert timings["total_time"] == pytest.approx(timings["setup_time"] + timings["run_time"])
+    error_records = [record for record in caplog.records if record.levelno == logging.ERROR]
+    assert error_records, "the failure should be logged through the module's own logger, not only returned"
+    assert error_records[-1].name == "pywr_utils.model_runner", "the failure should be logged through the module's own named logger, not the root logger"
+    assert error_records[-1].exc_info is not None, "the traceback should be attached via exc_info rather than repeated in the log message"
 
 
 def test_run_file_derives_the_output_name_from_the_input_filename(model_file, tmp_path, monkeypatch):
