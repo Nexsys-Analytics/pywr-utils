@@ -1,0 +1,39 @@
+name: Gitleaks scan
+description: Downloads a checksum-verified gitleaks release and scans the commits introduced by the current push or pull request for secrets. Extracted so this repo's own CI and monorepo's synced copy of this repo can call the identical steps locally -- see the parent engagement README's "Sharing CI with the monorepo" pattern, established for infrastructure and applied here.
+
+inputs:
+  working-directory:
+    description: Directory whose git history and .gitleaks.toml config to scan
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Install gitleaks
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        VER=8.21.2
+        curl -sSfL --max-time 60 -o gitleaks.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${VER}/gitleaks_${VER}_linux_x64.tar.gz"
+        echo "5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba  gitleaks.tar.gz" | sha256sum -c -
+        tar -xzf gitleaks.tar.gz gitleaks
+        rm gitleaks.tar.gz
+        ./gitleaks version
+
+    - name: Scan new commits for secrets
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        set -euo pipefail
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          RANGE="${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
+        elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+          RANGE="-1 ${{ github.sha }}"          # first push of a branch: scan tip commit
+        else
+          RANGE="${{ github.event.before }}..${{ github.sha }}"
+        fi
+        echo "Scanning commit range: $RANGE"
+        ./gitleaks detect --source . --log-opts="$RANGE" \
+          --config .gitleaks.toml --redact --verbose

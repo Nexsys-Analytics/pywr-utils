@@ -1,0 +1,40 @@
+name: Typecheck and lint
+description: Runs mypy, ruff, vulture, bandit, and pip-audit against the Python package. Extracted so this repo's own CI and monorepo's synced copy of this repo can call the identical steps locally -- see the parent engagement README's "Sharing CI with the monorepo" pattern, established for infrastructure and applied here.
+
+inputs:
+  working-directory:
+    description: Directory containing the pywr_utils package to check
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pip install -e ".[dev]"
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: mypy pywr_utils/
+    - name: lint (ruff)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: ruff check .
+    - name: dead-code scan (vulture)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: vulture pywr_utils vulture_whitelist.py --min-confidence 80
+    - name: security scan (bandit)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: bandit -r pywr_utils
+    - name: dependency vulnerability scan (pip-audit)
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      # pip itself is not a declared dependency, just whatever setup-python provisions; keep it current so a stale bundled pip doesn't produce a false CVE finding here.
+      run: |
+        pip install -U pip
+        pip-audit --skip-editable
