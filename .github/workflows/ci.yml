@@ -34,7 +34,7 @@ jobs:
   test:
     runs-on: gha-ci-runners
     env:
-      # pywr's lpsolve extension needs headers this runner doesn't have; glpk (also needed) is installed below via apt.
+      # pywr's lpsolve extension needs headers this runner doesn't have; glpk (also needed) is prebaked into the ci-runners image.
       PYWR_BUILD_LPSOLVE: "false"
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +43,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: sudo apt-get update && sudo apt-get install -y libglpk-dev
       - run: pip install -e ".[run,dev]"
       - run: pytest -v
       - name: write coverage summary
