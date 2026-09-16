@@ -1,0 +1,41 @@
+name: Test
+description: Installs the package with its run/dev extras, runs the pytest suite, and uploads a coverage report. Extracted so this repo's own CI and monorepo's synced copy of this repo can call the identical steps locally -- see the parent engagement README's "Sharing CI with the monorepo" pattern, established for infrastructure and applied here.
+
+inputs:
+  working-directory:
+    description: Directory containing the pywr_utils package to test
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      # pywr's lpsolve extension needs headers this runner doesn't have; glpk (also needed) is prebaked into the ci-runners image.
+      env:
+        PYWR_BUILD_LPSOLVE: "false"
+      run: pip install -e ".[run,dev]"
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pytest -v
+    - name: write coverage summary
+      # Fully native, no admin-gated feature or third-party action needed: coverage.py's own markdown formatter piped into GitHub Actions' own step-summary mechanism. Shows up on every run's summary page (and one click away from the PR checks list) regardless of whether Code Quality is ever enabled.
+      if: always()
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        echo '## Coverage' >> "$GITHUB_STEP_SUMMARY"
+        python -m coverage report --format=markdown >> "$GITHUB_STEP_SUMMARY"
+    - name: upload coverage report
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+      uses: actions/upload-code-coverage@v1
+      with:
+        file: ${{ inputs.working-directory }}/coverage.xml
+        language: Python
+        label: code-coverage/pytest
+        # TEMPORARY: Code Quality isn't enabled for this repo yet (Settings > Security > Code quality) — that's an org/repo admin action, and neither CI nor a push-only collaborator can do it. Without this, the upload 403s and fails the whole job. Remove fail-on-error once an admin enables Code Quality and this step succeeds for real.
+        fail-on-error: false
