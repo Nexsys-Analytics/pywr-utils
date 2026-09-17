@@ -1,0 +1,29 @@
+name: Test minimal install
+description: Regression guard for the model_runner lazy-import bug -- a plain `pip install .`, with neither pandas nor pywr present, must still let create-synthetic-model run. Extracted so this repo's own CI and monorepo's synced copy of this repo can call the identical steps locally -- see the parent engagement README's "Sharing CI with the monorepo" pattern, established for infrastructure and applied here.
+
+inputs:
+  working-directory:
+    description: Directory containing the pywr_utils package to test
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pip install .
+    - shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        pywr-utils create-synthetic-model --zones 2 --transfers 1 --output /tmp/synthetic.json --show-summary
+        test -f /tmp/synthetic.json
+    - name: confirm pandas and pywr are genuinely absent
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        ! python -c "import pandas" 2>/dev/null
+        ! python -c "import pywr" 2>/dev/null
