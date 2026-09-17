@@ -15,14 +15,14 @@ jobs:
     runs-on: gha-ci-runners
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/typecheck
 
   test:
     runs-on: gha-ci-runners
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ./.github/actions/test
@@ -32,5 +32,5 @@ jobs:
     runs-on: gha-ci-runners
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/test-minimal-install
