@@ -10,6 +10,8 @@ import pytest
 from pywr_utils import model_runner
 from pywr_utils.model_runner import PywrFileRunner, run_incremental_sizes
 
+pytestmark = pytest.mark.integration
+
 SWEEP_ARGS = {"max_zones": 2, "zone_increment": 2, "transfer_increment": 2, "output_csv": "timings.csv"}
 
 
