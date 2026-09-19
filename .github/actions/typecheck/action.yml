@@ -13,9 +13,14 @@ runs:
     - uses: actions/setup-python@v5
       with:
         python-version: "3.12"
+    - uses: astral-sh/setup-uv@v7
+      with:
+        enable-cache: true
+        cache-dependency-glob: |
+          ${{ inputs.working-directory }}/pyproject.toml
     - shell: bash
       working-directory: ${{ inputs.working-directory }}
-      run: pip install -e ".[dev]"
+      run: uv pip install --system -e ".[dev]"
     - shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: mypy pywr_utils/
