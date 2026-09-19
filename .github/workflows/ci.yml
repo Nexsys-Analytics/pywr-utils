@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
   pull_request: {}
-  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -13,24 +12,20 @@ permissions:
 jobs:
   typecheck:
     runs-on: gha-ci-runners
-    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/typecheck
 
   test:
     runs-on: gha-ci-runners
-    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: ./.github/actions/test
 
   test-minimal-install:
-    # Regression guard for the model_runner lazy-import bug: a plain `pip install .`, with neither pandas nor pywr present, must still let create-synthetic-model run — only the `run` extra needs either.
     runs-on: gha-ci-runners
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/test-minimal-install

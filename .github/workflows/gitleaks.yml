@@ -5,7 +5,6 @@ on:
   pull_request:
   push:
     branches: [main]
-  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -14,9 +13,8 @@ jobs:
   gitleaks:
     # Self-hosted fleet: the org's billing block stops GitHub-hosted jobs, and the runner container has no sudo -- the binary runs from the workspace by path.
     runs-on: gha-ci-runners
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: ./.github/actions/gitleaks
