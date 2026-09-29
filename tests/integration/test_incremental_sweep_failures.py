@@ -115,10 +115,6 @@ def test_the_confirmed_summary_reports_its_size_on_disk(workdir, capsys):
     assert f"File size: {(workdir / 'timings.csv').stat().st_size} bytes" in output
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="run_incremental_sizes joins the output directory onto a path that already contains it, so an output_csv with any directory component is written to <dir>/<dir>/<name> and the whole sweep's results are lost to an OSError after every model has already been run.",
-)
 def test_an_output_path_with_a_directory_component_is_written_where_it_was_asked_for(workdir):
     run_incremental_sizes(max_zones=2, zone_increment=2, transfer_increment=2, output_csv="results/timings.csv")
 
