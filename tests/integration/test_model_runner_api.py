@@ -12,6 +12,8 @@ from pywr_utils import model_runner
 from pywr_utils.model_creation import SyntheticModelCreator
 from pywr_utils.model_runner import PywrFileRunner, run_file, run_incremental_sizes
 
+pytestmark = pytest.mark.integration
+
 DEFAULT_SOLVER = "glpk"
 ALTERNATIVE_SOLVER = "glpk-edge"
 

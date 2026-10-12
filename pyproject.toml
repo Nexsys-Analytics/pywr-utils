@@ -41,6 +41,11 @@ include = ["pywr_utils*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "--cov=pywr_utils --cov-report=term-missing --cov-report=xml"
+markers = [
+    "unit: a single function/class in isolation, no DB/network/subprocess",
+    "integration: real internal components wired together via the code's own Python API, no mocks",
+    "e2e: drives the installed CLI entrypoint end to end",
+]
 
 [tool.coverage.report]
 # Ratchet, not an aspirational target: set at today's measured coverage (99.23%, after a full unit/integration/e2e pass on model_runner.py) minus a small buffer for environment variance, so coverage can't silently regress further without failing CI. Raise this number as coverage genuinely improves.

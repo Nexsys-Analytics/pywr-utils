@@ -8,6 +8,8 @@ import pytest
 
 from pywr_utils.model_creation import SyntheticModelCreator, create_synthetic_model
 
+pytestmark = pytest.mark.unit
+
 # One input produces three nodes: an input, a link and a demand. Each transfer adds one further link node.
 NODES_PER_INPUT = 3
 
