@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   gitleaks:
-    # Self-hosted fleet: the org's billing block stops GitHub-hosted jobs, and the runner container has no sudo -- the binary runs from the workspace by path.
+    # GitHub-hosted: the repository is public, so the organisation's private-only runner group never serves it. The binary runs from the workspace by path, so no sudo is needed.
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
