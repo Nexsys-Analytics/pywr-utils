@@ -25,15 +25,13 @@ runs:
     - name: Scan new commits for secrets
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+      # scan-range.sh explains each event's range, and why a pull request's comes from its merge commit and not from pull_request.base.sha.
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        PUSHED_FROM: ${{ github.event.before }}
       run: |
         set -euo pipefail
-        if [ "${{ github.event_name }}" = "pull_request" ]; then
-          RANGE="${{ github.event.pull_request.base.sha }}..${{ github.sha }}"
-        elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
-          RANGE="-1 ${{ github.sha }}"          # first push of a branch: scan tip commit
-        else
-          RANGE="${{ github.event.before }}..${{ github.sha }}"
-        fi
+        RANGE="$("${{ github.action_path }}/scan-range.sh")"
         echo "Scanning commit range: $RANGE"
         ./gitleaks detect --source . --log-opts="$RANGE" \
           --config .gitleaks.toml --redact --verbose
