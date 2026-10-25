@@ -219,7 +219,7 @@ def run_incremental_sizes(max_zones=100, zone_increment=10, max_transfers=None, 
     # Save results to CSV
     if results:
         df = pd.DataFrame(results)
-        output_path = os.path.join(output_dir, output_csv)
+        output_path = output_csv
         try:
             df.to_csv(output_path, index=False)
             print(f"\nResults saved to {os.path.abspath(output_path)}")
